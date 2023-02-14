@@ -5,22 +5,38 @@ import iconPaper from './assets/icon-paper.svg'
 import iconRock from './assets/icon-rock.svg'
 import iconScissors from './assets/icon-scissors.svg'
 
-const Button = ({buttonFunction=undefined,buttonStats = null,text='button'}) =>{
+const Button = ({buttonFunction=undefined,buttonStats = undefined,text='button'}) =>{
   
   const typeOption = {
     TRANSPARENT : {class:'button_transparent'},
     FILLED:{class:'button_filled'}
   }
 
-  console.log(typeOption.TRANSPARENT.class)
+  let classType
 
-  const buttonModule = buttonStats === null 
-  ? 
-  <button className={`${typeOption.TRANSPARENT.class}`}>{text}</button> 
-  : 
-  <button className={`${typeOption.FILLED.class}`}>{text}</button>;
 
-  return buttonModule
+  
+  if(buttonStats === undefined){
+    classType = typeOption.TRANSPARENT.class
+  }else{
+    if(buttonStats == 'TRANSPARENT'){
+      classType = typeOption.TRANSPARENT.class
+    }else{
+      classType = typeOption.FILLED.class
+    }
+  }
+  
+
+
+  const buttonModule2 = buttonFunction === undefined
+  ?
+  <button className={classType}>{text}</button>
+  :
+  <button className={classType} onClick={buttonFunction}>{text}</button>
+
+
+  
+  return buttonModule2
 
 
 }
@@ -38,7 +54,6 @@ const OptionContainer = ({className,image,option,dataFunction = undefined}) =>{
     if(dataFunction){
 
       dataFunction(option)
-      console.log(OPTION[option].class);
     }
   }
   
@@ -87,19 +102,37 @@ const ResultGameContainer = ({optionSelected}) =>{
     'SCISSORS'
   ]
 
+  const CONDITIONS ={
+    ROCK: {PAPER:'YOU WIN',SCISSORS:'YOU LOSE',ROCK:'DRAW'},
+    PAPER:{ROCK:'YOU WIN',SCISSORS:'YOU LOSE',PAPER:'DRAW'},
+    SCISSORS:{ROCK:'YOU LOSE',SCISSORS:'DRAW',PAPER:'YOU WIN'}
+  }
+
   useEffect( ()=>{
     
-    setTimeout(  ()=>{ 
+    const timer = setTimeout(()=>{ 
     const newOptionPicked = parseInt(Math.random() * (2-0)+0)
-    console.log("Resultado es : " + RESULT_LIST[newOptionPicked])
+
     setOptionPicked(RESULT_LIST[newOptionPicked]);
 
     },1500)
-    setContador(contador+1)
+
+    return () => {
+      clearTimeout(timer);
+    };
+
 
   },[])
   
-  console.log('rendered' + contador)
+
+
+  useEffect(()=>{
+    //optionPicked BOT - optionSelected PLAYER
+
+    
+  
+  },[optionPicked])
+
 
   return(
 
@@ -118,12 +151,13 @@ const ResultGameContainer = ({optionSelected}) =>{
         <div className='result_information'>
           <div className='information_data'>
           <label>YOU LOSE</label>
-          <button>PLAY AGAIN</button>
+          <Button buttonStats={'FILLED'} text='PLAY AGAIN' />
           </div>
 
           <div>
             <Button text='RULES'/>
           </div>
+
         </div>
 
 

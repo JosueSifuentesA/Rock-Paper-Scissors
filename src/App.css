@@ -255,3 +255,7 @@ div.information_data button{
   height: 50px;
 }
 
+.button_filled{
+  background-color: white;
+  border: none;
+}
