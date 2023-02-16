@@ -5,6 +5,8 @@ import './App.css'
 import iconPaper from './assets/icon-paper.svg'
 import iconRock from './assets/icon-rock.svg'
 import iconScissors from './assets/icon-scissors.svg'
+import iconRules from './assets/image-rules.svg'
+
 
 const Button = ({buttonFunction=undefined,buttonStats = undefined,text='button'}) =>{
   
@@ -91,7 +93,7 @@ const GameContainer = ({dataFunction}) =>{
 
 }
 
-const ResultGameContainer = ({optionSelected,dataFunction = undefined,recieveRestart=undefined}) =>{
+const ResultGameContainer = ({optionSelected,dataFunction = undefined,recieveRestart=undefined,showRules=undefined}) =>{
 
   const [condition,setCondition] = useState(null)
   const [optionPicked,setOptionPicked] = useState(null)
@@ -168,7 +170,7 @@ const ResultGameContainer = ({optionSelected,dataFunction = undefined,recieveRes
           </div>
 
           <div>
-            <Button text='RULES'/>
+            <Button buttonFunction={showRules} text='RULES'/>
           </div>
 
 
@@ -191,8 +193,8 @@ function App() {
 
   const [gameData,setGameData] = useState(null);
   const [clicked,setClicked] = useState(false)
+  const [rules ,setRules] = useState(false)
   const [contador,setContador] = useState(()=>{
-    //window.localStorage.getItem('scores'))=== null
     if(window.localStorage.getItem('scores') === null) { return 0} else {return JSON.parse(window.localStorage.getItem('scores'))}
   })
 
@@ -218,6 +220,10 @@ function App() {
 
   }
 
+  const showRules = () =>{
+    setRules(!rules)
+  }
+
   useEffect(()=>{
     if(contador < 0 ){
       setContador(0)
@@ -232,8 +238,23 @@ function App() {
     setClicked(data)
   }
 
+
   return (
     <>
+    
+    
+    {rules && (<div className='messageContainer'>
+      <div className='messageContainer_window' >
+        <div className='messageContainer_header'>
+        <h1>RULES</h1>
+        <button onClick={showRules} className='window_btn' />
+        </div>
+        <img style={{width:'fit-content'}} src={iconRules}/>
+      </div>
+    </div>)}
+
+
+
     <header className='ScoreContainer'>
       <div className='ScoreContainer_title'>
         <label>ROCK</label>
@@ -248,7 +269,7 @@ function App() {
 
     <main className='Game'>
       {clicked == false && (<GameContainer dataFunction={recieveData}></GameContainer>)}
-      {clicked == true && (<ResultGameContainer recieveRestart={recieveRestart} dataFunction={recieveCounter} optionSelected={gameData}></ResultGameContainer>)}    
+      {clicked == true && (<ResultGameContainer showRules={showRules} recieveRestart={recieveRestart} dataFunction={recieveCounter} optionSelected={gameData}></ResultGameContainer>)}    
     </main>
 
     </>

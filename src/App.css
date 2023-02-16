@@ -295,3 +295,48 @@ div.information_data button{
   transform: scale(0);
   transition: transform 300ms ease-in;
 }
+
+.messageContainer{
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #0000007a;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.messageContainer_window{
+  display:flex;
+  flex-flow:column;
+  gap:20px;
+  align-self:center;
+  background-color:#efefef;
+  padding: 30px;
+  border-radius: 10px;
+  align-items: center;
+}
+
+.window_btn{
+  background-image: url('./assets/icon-close.svg');
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+}
+
+.messageContainer_header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+}
