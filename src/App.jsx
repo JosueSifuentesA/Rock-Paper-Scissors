@@ -1,5 +1,6 @@
 
 import { useState,useEffect } from 'react'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './App.css'
 import iconPaper from './assets/icon-paper.svg'
 import iconRock from './assets/icon-rock.svg'
@@ -90,11 +91,12 @@ const GameContainer = ({dataFunction}) =>{
 
 }
 
-const ResultGameContainer = ({optionSelected}) =>{
+const ResultGameContainer = ({optionSelected,dataFunction = undefined,recieveRestart=undefined}) =>{
 
-  const [contador,setContador] = useState(0)
-
+  const [condition,setCondition] = useState(null)
   const [optionPicked,setOptionPicked] = useState(null)
+
+
 
   const RESULT_LIST = [
     'ROCK',
@@ -103,7 +105,7 @@ const ResultGameContainer = ({optionSelected}) =>{
   ]
 
   const CONDITIONS ={
-    ROCK: {PAPER:'YOU WIN',SCISSORS:'YOU LOSE',ROCK:'DRAW'},
+    ROCK: {PAPER:'YOU LOSE',SCISSORS:'YOU WIN',ROCK:'DRAW'},
     PAPER:{ROCK:'YOU WIN',SCISSORS:'YOU LOSE',PAPER:'DRAW'},
     SCISSORS:{ROCK:'YOU LOSE',SCISSORS:'DRAW',PAPER:'YOU WIN'}
   }
@@ -124,20 +126,27 @@ const ResultGameContainer = ({optionSelected}) =>{
 
   },[])
   
+  const checkResult = ()=>{
+    if(CONDITIONS[optionSelected][optionPicked] === 'YOU WIN' ||CONDITIONS[optionSelected][optionPicked] === 'YOU LOSE' ||CONDITIONS[optionSelected][optionPicked] === 'DRAW'){
+      const newCondition = CONDITIONS[optionSelected][optionPicked]
+      setCondition(newCondition)
+      dataFunction({condition:newCondition,clicked:false})
+    }
+  }
+
+  const restartGame = () =>{
+    recieveRestart(false)
+  }
 
 
   useEffect(()=>{
-    //optionPicked BOT - optionSelected PLAYER
-
-    
-  
+    checkResult()
   },[optionPicked])
-
 
   return(
 
     <section className='Game_result'>
-                  
+                
       <div className='result result_playerOption' >
           <OptionContainer option={optionSelected}/>
           <label>YOU PICKED</label>
@@ -148,17 +157,25 @@ const ResultGameContainer = ({optionSelected}) =>{
           <label>THE HOUSE PICKED</label>
         </div>
 
+        <TransitionGroup className={'result_information'}>
+        {optionPicked &&(
+          <CSSTransition classNames="scale" timeout={6000}>
+
         <div className='result_information'>
           <div className='information_data'>
-          <label>YOU LOSE</label>
-          <Button buttonStats={'FILLED'} text='PLAY AGAIN' />
+          <label>{condition}</label>
+          <Button buttonFunction={restartGame} buttonStats={'FILLED'} text='PLAY AGAIN' />
           </div>
 
           <div>
             <Button text='RULES'/>
           </div>
 
+
         </div>
+          </CSSTransition>
+        )}
+        </TransitionGroup>
 
 
 
@@ -174,6 +191,10 @@ function App() {
 
   const [gameData,setGameData] = useState(null);
   const [clicked,setClicked] = useState(false)
+  const [contador,setContador] = useState(()=>{
+    //window.localStorage.getItem('scores'))=== null
+    if(window.localStorage.getItem('scores') === null) { return 0} else {return JSON.parse(window.localStorage.getItem('scores'))}
+  })
 
 
   const recieveData = (data) =>{
@@ -181,6 +202,35 @@ function App() {
     setClicked(true)
   }
 
+  const recieveCounter = (data) =>{
+
+    let counter = contador;
+
+    if(data.condition === 'YOU WIN'){
+      setContador(counter+1)
+    }else if(data.condition ==='YOU LOSE'){
+      setContador(counter-1)
+    }else if (data.condition === 'DRAW'){
+      setContador(counter)
+    }else{
+      console.log('Procesando....')
+    }
+
+  }
+
+  useEffect(()=>{
+    if(contador < 0 ){
+      setContador(0)
+    }
+
+    window.localStorage.setItem('scores',contador)
+
+  },[contador])
+
+
+  const recieveRestart = (data) =>{
+    setClicked(data)
+  }
 
   return (
     <>
@@ -192,13 +242,13 @@ function App() {
       </div>
       <div className='ScoreContainer_score'>
         <label className='score_name'>SCORE</label>
-        <label className='score_value'>12</label>
+        <label className='score_value'>{contador}</label>
       </div>
     </header>
 
     <main className='Game'>
       {clicked == false && (<GameContainer dataFunction={recieveData}></GameContainer>)}
-      {clicked == true && (<ResultGameContainer optionSelected={gameData}></ResultGameContainer>)}
+      {clicked == true && (<ResultGameContainer recieveRestart={recieveRestart} dataFunction={recieveCounter} optionSelected={gameData}></ResultGameContainer>)}    
     </main>
 
     </>
