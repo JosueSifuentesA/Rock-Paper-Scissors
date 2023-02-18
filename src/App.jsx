@@ -62,7 +62,7 @@ const OptionContainer = ({className,image,option,dataFunction = undefined}) =>{
   
   return (
     <div onClick={handleClick} className={`${OPTION[option]?.class}`}>
-      <img className='imageSelection' src={OPTION[option]?.src} />
+      <img className='imageSelection' src={OPTION[option]?.src} alt={`${OPTION[option]?.class} icon`} />
     </div>
   )
 }
