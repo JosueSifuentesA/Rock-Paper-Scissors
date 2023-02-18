@@ -3,6 +3,11 @@ This is a simple web-based implementation of the classic game of Rock Paper Scis
 
 In addition, the game includes a button to display the game rules, and the user's score is persisted across page refreshes using browser local storage.
 
+
+# LIVE DEMO
+https://rock-paper-scissors-three-murex.vercel.app/
+
+
 # Usage
 To play the game, simply select one of the three options (rock, paper, or scissors) and click the "Play" button. The computer will randomly choose its option, and the outcome of the game will be displayed on the screen.
 
@@ -15,6 +20,3 @@ If you have any suggestions or bug reports, please feel free to open an issue on
 
 # License
 This project is licensed under the MIT License.
-
-# LIVE DEMO
-https://rock-paper-scissors-three-murex.vercel.app/
